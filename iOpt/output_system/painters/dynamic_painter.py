@@ -42,7 +42,7 @@ class AnimateVisualization1D:
 
         plt.ion()
         plt.style.use('fivethirtyeight')
-        self.fig, self.ax = plt.subplots()
+        self.fig, self.ax = plt.subplots(figsize=(8, 6))
         self.ax.set_autoscaley_on(True)
         self.ax.set_xlim(self.leftBound, self.rightBound)
         self.ax.tick_params(axis='both', labelsize=8)
@@ -56,10 +56,10 @@ class AnimateVisualization1D:
             fv = self.objFunc(x_, fv)
             z.append(fv.value)
         plt.rcParams['contour.negative_linestyle'] = 'solid'
-        plt.plot(x, z, linewidth=1, color='black', alpha=0.7)
+        self.ax.plot(x, z, linewidth=1, color='black', alpha=0.7)
 
     def drawPoint(self, point, value, isPointsAtBottom):
-        # self.ax.plot(point, value, color='green', 
+        # self.ax.plot(point, value, color='green',
         #        label='original', marker='o', markersize=1)
         if isPointsAtBottom:
             value = -1

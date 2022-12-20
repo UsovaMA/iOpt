@@ -95,7 +95,7 @@ class FunctionStaticPainter:
         size = 100
         x_plot = np.linspace(leftBound[parameterInNDProblem], rightBound[parameterInNDProblem], size)
         z = nn.predict(x_plot[:, np.newaxis])
-        plt.plot(x_plot, z, color='black', linewidth=1, alpha=0.7)
+        sv1d.ax.plot(x_plot, z, color='black', linewidth=1, alpha=0.7)
 
         sv1d.drawPoints()
 
@@ -145,7 +145,7 @@ class FunctionStaticPainter:
         f = interpolate.interp1d(X_train, y_train, kind=3)
         size = 100
         x_plot = np.linspace(min(X_train), max(X_train), size)
-        plt.plot(x_plot, f(x_plot), color='black', linewidth=1, alpha=0.7)
+        sv1d.ax.plot(x_plot, f(x_plot), color='black', linewidth=1, alpha=0.7)
 
         sv1d.drawPoints()
 
@@ -194,7 +194,7 @@ class StaticVisualization1D:
             fv = self.objFunc(x_, fv)
             z.append(fv.value)
         plt.rcParams['contour.negative_linestyle'] = 'solid'
-        plt.plot(x, z, linewidth=1, color='black', alpha=0.7)
+        self.ax.plot(x, z, linewidth=1, color='black', alpha=0.7)
 
     def drawPoints(self):
         for i in range(len(self.points)):
@@ -242,13 +242,13 @@ class FunctionStaticNDPainter:
         rightBound = self.solution.problem.upperBoundOfFloatVariables
 
         # передаём точки, оптимум, границы и указатель на функцию для построения целевой функции
-        sv1d = StaticVisualizationND("2d", points, bestTrialPoint, bestTrialValue, leftBound, rightBound,
+        svnd = StaticVisualizationND("2d", points, bestTrialPoint, bestTrialValue, leftBound, rightBound,
                                      self.solution.problem.Calculate, first, second)
 
         pointsCount = 150
-        xF = np.arange(sv1d.leftBoundF, sv1d.rightBoundF, (sv1d.rightBoundF - sv1d.leftBoundF) / pointsCount)
-        xS = np.arange(sv1d.leftBoundS, sv1d.rightBoundS, (sv1d.rightBoundS - sv1d.leftBoundS) / pointsCount)
-        copy = sv1d.optimum.copy()
+        xF = np.arange(svnd.leftBoundF, svnd.rightBoundF, (svnd.rightBoundF - svnd.leftBoundF) / pointsCount)
+        xS = np.arange(svnd.leftBoundS, svnd.rightBoundS, (svnd.rightBoundS - svnd.leftBoundS) / pointsCount)
+        copy = svnd.optimum.copy()
         xv, yv = np.meshgrid(xF, xS)
         z = []
 
@@ -256,19 +256,19 @@ class FunctionStaticNDPainter:
             z_ = []
             for j in range(pointsCount):
                 fv = FunctionValue()
-                copy[sv1d.first] = xv[i, j]
-                copy[sv1d.second] = yv[i, j]
+                copy[svnd.first] = xv[i, j]
+                copy[svnd.second] = yv[i, j]
                 x_ = Point(copy, [])
                 fv = FunctionValue()
-                fv = sv1d.objFunc(x_, fv)
+                fv = svnd.objFunc(x_, fv)
                 z_.append(fv.value)
             z.append(z_)
-        sv1d.ax.contour(xF, xS, z, linewidths=1, levels=25, cmap=plt.cm.viridis)
+        svnd.ax.contour(xF, xS, z, linewidths=1, levels=25, cmap=plt.cm.viridis)
 
-        for point in sv1d.points:
-            sv1d.ax.plot(point[sv1d.first], point[sv1d.second], color='blue',
+        for point in svnd.points:
+            svnd.ax.plot(point[svnd.first], point[svnd.second], color='blue',
                          label='original', marker='o', markersize=2)
-        sv1d.ax.plot(sv1d.optimum[sv1d.first], sv1d.optimum[sv1d.second], color='red',
+        svnd.ax.plot(svnd.optimum[svnd.first], svnd.optimum[svnd.second], color='red',
                      label='original', marker='x', markersize=4)
 
         if not os.path.isdir(pathForSaves):
@@ -295,7 +295,7 @@ class FunctionStaticNDPainter:
         rightBound = self.solution.problem.upperBoundOfFloatVariables
 
         # передаём точки, оптимум, границы и указатель на функцию для построения целевой функции
-        sv1d = StaticVisualizationND("2d", [], bestTrialPoint, bestTrialValue, leftBound, rightBound,
+        svnd = StaticVisualizationND("2d", [], bestTrialPoint, bestTrialValue, leftBound, rightBound,
                                      self.solution.problem.Calculate, first, second)
 
         # формируем массив точек итераций для графика
@@ -323,13 +323,13 @@ class FunctionStaticNDPainter:
         xx, yy = np.meshgrid(x_x, y_y)
         zz = interp(xx, yy)
 
-        sv1d.ax.contour(x_x, y_y, zz, linewidths=1, cmap=plt.cm.viridis)
+        svnd.ax.contour(x_x, y_y, zz, linewidths=1, cmap=plt.cm.viridis)
 
-        for point in sv1d.points:
-            sv1d.ax.plot(point[sv1d.first], point[sv1d.second], color='blue',
+        for point in X_train:
+            svnd.ax.plot(point[0], point[1], color='blue',
                          label='original', marker='o', markersize=2)
 
-        sv1d.ax.plot(sv1d.optimum[sv1d.first], sv1d.optimum[sv1d.second], color='red',
+        svnd.ax.plot(svnd.optimum[svnd.first], svnd.optimum[svnd.second], color='red',
                      label='original', marker='x', markersize=4)
 
         if not os.path.isdir(pathForSaves):
@@ -356,7 +356,7 @@ class FunctionStaticNDPainter:
         rightBound = self.solution.problem.upperBoundOfFloatVariables
 
         # передаём точки, оптимум, границы и указатель на функцию для построения целевой функции
-        sv1d = StaticVisualizationND("3d", [], bestTrialPoint, bestTrialValue, leftBound, rightBound,
+        svnd = StaticVisualizationND("3d", [], bestTrialPoint, bestTrialValue, leftBound, rightBound,
                                      self.solution.problem.Calculate, first, second)
 
         # формируем массив точек итераций для графика
@@ -399,10 +399,10 @@ class FunctionStaticNDPainter:
         z = z.reshape(size, size)
 
         # полученная аппроксимация
-        sv1d.ax.plot_surface(xx, yy, z, cmap=plt.cm.viridis, alpha=0.6)
-        sv1d.ax.tick_params(axis='both', labelsize=8)
-        sv1d.ax.scatter(X, Y, y_train, color='blue', label='original', marker='o', s=2, alpha=1.0)
-        sv1d.ax.scatter([bestTrialPoint[first]], [bestTrialPoint[second]], bestTrialValue, s=4, color='red',
+        svnd.ax.plot_surface(xx, yy, z, cmap=plt.cm.viridis, alpha=0.6)
+        svnd.ax.tick_params(axis='both', labelsize=8)
+        svnd.ax.scatter(X, Y, y_train, color='blue', label='original', marker='o', s=2, alpha=1.0)
+        svnd.ax.scatter([bestTrialPoint[first]], [bestTrialPoint[second]], bestTrialValue, s=4, color='red',
                         label='original', marker='x', alpha=1.0)
 
         if not os.path.isdir(pathForSaves):
@@ -429,7 +429,7 @@ class FunctionStaticNDPainter:
         rightBound = self.solution.problem.upperBoundOfFloatVariables
 
         # передаём точки, оптимум, границы и указатель на функцию для построения целевой функции
-        sv1d = StaticVisualizationND("3d", [], bestTrialPoint, bestTrialValue, leftBound, rightBound,
+        svnd = StaticVisualizationND("3d", [], bestTrialPoint, bestTrialValue, leftBound, rightBound,
                                      self.solution.problem.Calculate, first, second)
 
         # формируем массив точек итераций для графика
@@ -458,10 +458,10 @@ class FunctionStaticNDPainter:
         zz = interp(xx, yy)
 
         # полученная аппроксимация
-        sv1d.ax.plot_surface(xx, yy, zz, cmap=plt.cm.viridis, alpha=0.6)
-        sv1d.ax.tick_params(axis='both', labelsize=8)
-        sv1d.ax.scatter(X, Y, y_train, color='blue', label='original', marker='o', s=2, alpha=1.0)
-        sv1d.ax.scatter([bestTrialPoint[first]], [bestTrialPoint[second]], bestTrialValue, s=4, color='red',
+        svnd.ax.plot_surface(xx, yy, zz, cmap=plt.cm.viridis, alpha=0.6)
+        svnd.ax.tick_params(axis='both', labelsize=8)
+        svnd.ax.scatter(X, Y, y_train, color='blue', label='original', marker='o', s=2, alpha=1.0)
+        svnd.ax.scatter([bestTrialPoint[first]], [bestTrialPoint[second]], bestTrialValue, s=4, color='red',
                         label='original', marker='x', alpha=1.0)
 
         if not os.path.isdir(pathForSaves):
@@ -500,3 +500,5 @@ class StaticVisualizationND:
         self.ax.set_xlim([self.leftBoundF, self.rightBoundF])
         self.ax.set_ylim([self.leftBoundS, self.rightBoundS])
         self.ax.tick_params(axis='both', labelsize=8)
+
+
