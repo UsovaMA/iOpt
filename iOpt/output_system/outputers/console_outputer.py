@@ -1,10 +1,10 @@
 from typing import List
+import sys
 
 from iOpt.method.search_data import SearchDataItem
 from iOpt.problem import Problem
 from iOpt.solution import Solution
 from iOpt.solver_parametrs import SolverParameters
-
 
 class ConsoleOutputer:
     def __init__(self, problem: Problem, parameters: SolverParameters):
@@ -141,7 +141,12 @@ class OutputFunctions:
             print("*{:>4}:".format(iter), end=' ')
         else:
             print("{:>5}:".format(iter), end=' ')
-        print("{:>19.8f}".format(value), end='   ')
+
+        if value == sys.float_info.max:
+            print("{:>{width}}".format("-", width=19), end='   ')
+        else:
+            print("{:>19.8f}".format(value), end='   ')
+
         if ndv > 0:
             print("{:<{width}}|".format(str(point) + " with " + str(dpoint), width=size_max_one_output * (dim1 + dim2)))
         else:
