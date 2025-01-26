@@ -82,7 +82,9 @@ class ConsoleOutputer:
             solution.solution_accuracy,
             best_trial_point,
             best_trial_d_point,
-            best_trial_value, self.ndv
+            best_trial_value,
+            self.ndv,
+            solution.number_of_non_computable_trials
         )
 
     def print_pareto_set_info(self, solution: Solution):
@@ -153,7 +155,8 @@ class OutputFunctions:
             print("{:<{width}}|".format(str(point), width=size_max_one_output * dim1))
 
     def print_result(self, solved, number_of_global_trials, number_of_local_trials, solving_time,
-                     solution_accuracy, best_trial_point, best_trial_d_point, best_trial_value, ndv):
+                     solution_accuracy, best_trial_point, best_trial_d_point, best_trial_value, ndv,
+                     number_of_non_computable_trials):
         size_max_one_output = 15
         dim = len(best_trial_point) + len(best_trial_d_point)
         print("-" * (30 + size_max_one_output * dim + 2))
@@ -163,6 +166,8 @@ class OutputFunctions:
         print("|{:>29} {:<{width}}|".format("global iteration count: ", number_of_global_trials,
                                             width=size_max_one_output * dim))
         print("|{:>29} {:<{width}}|".format("local iteration count: ", number_of_local_trials,
+                                            width=size_max_one_output * dim))
+        print("|{:>29} {:<{width}}|".format("non-comput. iteration count: ", number_of_non_computable_trials,
                                             width=size_max_one_output * dim))
         print("|{:>29} {:<{width}}|".format("solving time: ", solving_time, width=size_max_one_output * dim))
         print("|{:>29} {:<{width}}|".format("solution point: ", str(best_trial_point), width=size_max_one_output * dim))

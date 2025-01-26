@@ -12,6 +12,7 @@ class Solution:
                  best_trials: np.ndarray(shape=(1), dtype=Trial) =  np.array([Trial([], [])]),
                  number_of_global_trials: int = 1,
                  number_of_local_trials: int = 0,
+                 number_of_non_computable_trials: int = 0,
                  solving_time: np.double = 0.0,
                  solution_accuracy: np.double = 0.0
                  ):
@@ -31,5 +32,6 @@ class Solution:
 
         self.number_of_global_trials = number_of_global_trials
         self.number_of_local_trials = number_of_local_trials
+        self.number_of_non_computable_trials = number_of_non_computable_trials
         self.solving_time = solving_time
         self.solution_accuracy = solution_accuracy

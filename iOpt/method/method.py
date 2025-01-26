@@ -45,6 +45,7 @@ class Method:
         self.recalcR: bool = True
         self.recalcM: bool = True
         self.iterations_count: int = 0
+        self.non_computable_iterations_count: int = 0
         self.best: SearchDataItem = None
 
         self.parameters = parameters
@@ -276,6 +277,9 @@ class Method:
         except Exception:
             point.set_z(sys.float_info.max)
             point.set_index(-10)
+
+        if point.get_index() == -10:
+            self.non_computable_iterations_count += 1
 
         return point
 

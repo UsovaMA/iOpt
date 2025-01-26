@@ -76,6 +76,7 @@ class Process:
 
         result = self.get_results()
         result.solving_time += (datetime.now() - start_time).total_seconds()
+        result.number_of_non_computable_trials = self.method.non_computable_iterations_count
 
         for listener in self._listeners:
             status = self.method.check_stop_condition()
