@@ -170,7 +170,10 @@ class OutputFunctions:
         print("|{:>29} {:<{width}}|".format("non-comput. iteration count: ", number_of_non_computable_trials,
                                             width=size_max_one_output * dim))
         print("|{:>29} {:<{width}}|".format("solving time: ", solving_time, width=size_max_one_output * dim))
-        print("|{:>29} {:<{width}}|".format("solution point: ", str(best_trial_point), width=size_max_one_output * dim))
+        print("|{:>29} {:<{width}}|".format("solution point: ", str(best_trial_point[0]), width=size_max_one_output * dim))
+        for i in range(len(best_trial_point) - 1):
+            print("|{:>29} {:<{width}}|".format("", str(best_trial_point[i + 1]), width=size_max_one_output * dim))
+
         if ndv > 0:
             print("|{:>29} {:<{width}}|".format("best disrete combination: ", str(best_trial_d_point),
                                                 width=size_max_one_output * dim))
