@@ -13,6 +13,7 @@ class SolverParameters:
                  iters_limit: int = 20000,
                  evolvent_density: int = 10,
                  eps_r: np.double = 0.01,
+                 alpha: np.double = 0.08,
                  refine_solution: bool = False,
                  start_point: Point = [],
                  number_of_parallel_points: int = 1,
@@ -55,6 +56,7 @@ class SolverParameters:
 
         self.evolvent_density = evolvent_density
         self.eps_r = eps_r
+        self.alpha = alpha
         self.refine_solution = refine_solution
         self.start_point = start_point
         self.number_of_parallel_points = number_of_parallel_points

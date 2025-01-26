@@ -90,7 +90,11 @@ class IndexMethod(Method):
         deltax = curr_point.delta
 
         if left_point.get_index() < 0 and curr_point.get_index() < 0:
-            global_r = 2 * deltax - 4 * math.fabs(self.Z[0]) / (r * self.M[0])
+            # new approach
+            alpha = self.parameters.alpha
+            global_r = alpha * (1 - 1 / (r * r)) * deltax
+            # old approach
+            #global_r = 2 * deltax - 4 * math.fabs(self.Z[0]) / (r * self.M[0])
         elif left_point.get_index() == curr_point.get_index():
             v = curr_point.get_index()
             global_r = deltax + (zr - zl) * (zr - zl) / (deltax * self.M[v] * self.M[v] * r * r) - \
