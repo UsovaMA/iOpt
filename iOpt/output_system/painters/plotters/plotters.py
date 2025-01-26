@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 
 from sklearn.neural_network import MLPRegressor
 from scipy import interpolate
 from matplotlib.cm import ScalarMappable
 from textwrap import wrap
+
 
 class DisretePlotter:
     def __init__(self, mode, pcount, floatdim, parametersvals, parametersnames, subparameters, lb, rb, bestsvalues,
@@ -311,7 +313,10 @@ class Plotter3D(Plotter):
             for j in range(points_count):
                 fv[self.indexes[0]] = xv[i, j]
                 fv[self.indexes[1]] = yv[i, j]
-                z_.append(calculate(fv))
+                value = calculate(fv)
+                if value == sys.float_info.max:
+                    value = np.nan
+                z_.append(value)
             z.append(z_)
 
         self.ax.contour(x1, x2, z, linewidths=1, levels=25, cmap=plt.cm.viridis)
@@ -343,6 +348,13 @@ class Plotter3D(Plotter):
 
     def plot_interpolation(self, points, values, points_count=100):
         if self.plotterType == 'lines layers':
+            j = 0
+            for _ in range(len(values)):
+                if values[j] == sys.float_info.max:
+                    points.pop(j)
+                    values.pop(j)
+                    j -= 1
+                j += 1
             interp = interpolate.Rbf(np.array(points)[:, 0], np.array(points)[:, 1], values)
             x1 = np.linspace(self.leftBounds[0], self.rightBounds[0], points_count)
             x2 = np.linspace(self.leftBounds[1], self.rightBounds[1], points_count)
@@ -361,10 +373,28 @@ class Plotter3D(Plotter):
         if self.plotterType == 'surface':
             self.ax.plot_trisurf(np.array(points)[:, 0], np.array(points)[:, 1], values, cmap=plt.cm.viridis, alpha=0.95)
         if self.plotterType == 'lines layers':
+            j = 0
+            for _ in range(len(values)):
+                if values[j] == sys.float_info.max:
+                    points.pop(j)
+                    values.pop(j)
+                    j -= 1
+                j += 1
             self.ax.tricontourf(np.array(points)[:, 0], np.array(points)[:, 1], values, cmap=plt.cm.viridis)
     def plot_points(self, points, values, clr='blue', mrkr='o', mrkrs=3):
         if self.plotterType == 'lines layers':
-            self.ax.scatter(np.array(points)[:, 0], np.array(points)[:, 1], color=clr, marker=mrkr, s=mrkrs)
+            non_computable_points = []
+            computable_points = []
+            for i in range(len(values)):
+                if values[i] == sys.float_info.max:
+                    non_computable_points.append(points[i])
+                else:
+                    computable_points.append(points[i])
+            if non_computable_points:
+                self.ax.scatter(np.array(non_computable_points)[:, 0], np.array(non_computable_points)[:, 1],
+                                color='black', marker=mrkr, s=mrkrs)
+            self.ax.scatter(np.array(computable_points)[:, 0], np.array(computable_points)[:, 1], color=clr,
+                            marker=mrkr, s=mrkrs)
         elif self.plotterType == 'surface':
             if self.calc_type == 'by points':
                 self.ax.scatter(np.array(points)[:, 0], np.array(points)[:, 1], values, s=mrkrs, color=clr, marker=mrkr,

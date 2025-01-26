@@ -8,6 +8,7 @@ from iOpt.output_system.painters.painter import Painter
 
 import matplotlib.pyplot as plt
 import os
+import sys
 
 class DiscretePainter(Painter):
     def __init__(self, search_data_sorted, bestsvalues, pcount, floatdim, optimumPoint, discreteValues,
@@ -122,7 +123,10 @@ class DiscretePainter(Painter):
     def calculate_func(self, x, d):
         point = Point(x, d)
         fv = FunctionValue()
-        fv = self.calculate(point, fv)
+        try:
+            fv = self.calculate(point, fv)
+        except Exception:
+            return sys.float_info.max
         return fv.value
 class StaticPainter(Painter):
     def __init__(self, search_data: SearchData,
@@ -201,7 +205,10 @@ class StaticPainter(Painter):
     def calculate_func(self, x):
         point = Point(x)
         fv = FunctionValue()
-        fv = self.objFunc(point, fv)
+        try:
+            fv = self.objFunc(point, fv)
+        except Exception:
+            return sys.float_info.max
         return fv.value
 
 class StaticPainterND(Painter):
@@ -281,7 +288,10 @@ class StaticPainterND(Painter):
     def calculate_func(self, x):
         point = Point(x, [])
         fv = FunctionValue()
-        fv = self.objFunc(point, fv)
+        try:
+            fv = self.objFunc(point, fv)
+        except Exception:
+            return sys.float_info.max
         return fv.value
 
 
